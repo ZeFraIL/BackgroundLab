@@ -1,0 +1,34 @@
+@startuml
+!theme vibrant
+title Thread & Handler Interaction
+
+actor User
+participant MainActivity
+participant "UI Thread" as UIThread
+participant "Worker Thread" as WorkerThread
+participant Handler
+
+User -> MainActivity: Clicks "Use Handler" button
+activate MainActivity
+
+MainActivity -> WorkerThread: new Thread(...).start()
+activate WorkerThread
+MainActivity -> UIThread: log("Starting new Thread...")
+deactivate MainActivity
+
+note over WorkerThread: Heavy work (e.g., SystemClock.sleep())
+... 5 seconds later ...
+
+WorkerThread -> Handler: post(Runnable)
+activate Handler
+note right: Task finished. Posting UI update\nvia Handler associated with UI Thread's Looper.
+
+Handler -> UIThread: Executes Runnable
+activate UIThread
+deactivate Handler
+
+UIThread -> UIThread: log("Handler running... Success!")
+note right: UI is safely updated.
+deactivate UIThread
+
+@enduml

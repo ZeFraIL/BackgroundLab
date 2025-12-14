@@ -1,0 +1,61 @@
+@startuml
+!theme vibrant
+title Bound Service Lifecycle
+
+actor User
+participant MainActivity
+participant AndroidSystem as "Android System"
+participant TimerService
+
+User -> MainActivity: Clicks "Bind Service"
+activate MainActivity
+
+MainActivity -> AndroidSystem: bindService(intent, serviceConnection)
+activate AndroidSystem
+
+AndroidSystem -> TimerService: onCreate()
+note right: Service is created for the first time.
+activate TimerService
+TimerService --> AndroidSystem: 
+
+AndroidSystem -> TimerService: onBind()
+TimerService --> AndroidSystem: Returns IBinder object
+
+AndroidSystem -> MainActivity: onServiceConnected(binder)
+note left: MainActivity now has a reference to the Service.
+deactivate AndroidSystem
+
+MainActivity -> User: Log("TimerService connected.")
+deactivate MainActivity
+
+... Time passes ...
+
+User -> MainActivity: Clicks "Get Timer"
+activate MainActivity
+MainActivity -> TimerService: getTimerValue()
+TimerService --> MainActivity: returns timerValue
+MainActivity -> User: Log("Timer value is X")
+deactivate MainActivity
+
+... Time passes ...
+
+User -> MainActivity: Clicks "Unbind Service"
+activate MainActivity
+
+MainActivity -> AndroidSystem: unbindService(serviceConnection)
+activate AndroidSystem
+note right: No more clients are bound.
+
+AndroidSystem -> TimerService: onUnbind()
+TimerService --> AndroidSystem
+
+AndroidSystem -> TimerService: onDestroy()
+note right: Service is destroyed.
+deactivate TimerService
+
+AndroidSystem --> MainActivity
+deactivate AndroidSystem
+MainActivity -> User: Log("Unbinding from TimerService...")
+deactivate MainActivity
+
+@enduml

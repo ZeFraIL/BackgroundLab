@@ -1,0 +1,131 @@
+@startuml
+class zeev.fraiman.backgroundlab.MyAsyncTask {
+- WeakReference<MainActivity> activityReference
+- WeakReference<ProgressBar> progressBarReference
+# void onPreExecute()
+# String doInBackground(Void)
+# void onProgressUpdate(Integer)
+# void onPostExecute(String)
+}
+
+
+class zeev.fraiman.backgroundlab.MainActivity {
+- TextView logTextView
+- ProgressBar asyncProgressBar
+- Handler mainHandler
+- ExecutorService singleThreadExecutor
+- ExecutorService fixedThreadPool
+- TimerService timerService
+- boolean isBound
+- ServiceConnection serviceConnection
+- UUID periodicWorkId
+- ActivityResultLauncher<String> requestPermissionLauncher
+# void onCreate(Bundle)
+- void initViews()
+- void initBackgroundExecutors()
+- void setupButtons()
+- void setupModule1Buttons()
+- void setupModule2Buttons()
+- void setupModule3Buttons()
+- void setupModule4Buttons()
+- void setupInfoButtons()
+- void showInfoDialog(String,String)
+- void setupServiceConnection()
+- void observeWork(UUID,String)
+- void handleStartService()
+- void startMusicService()
++ void log(String)
+# void onDestroy()
+}
+
+
+class zeev.fraiman.backgroundlab.PhotoCompressionWorker {
+- {static} String TAG
++ Result doWork()
+}
+
+
+class zeev.fraiman.backgroundlab.TimerService {
+- {static} String TAG
+- IBinder binder
+- ExecutorService executor
+- int timerValue
+- boolean isRunning
++ void onCreate()
++ IBinder onBind(Intent)
++ boolean onUnbind(Intent)
++ void onDestroy()
++ int getTimerValue()
+}
+
+
+class zeev.fraiman.backgroundlab.TimerService$TimerBinder {
+~ TimerService getService()
+}
+
+class zeev.fraiman.backgroundlab.ExampleInstrumentedTest {
++ void useAppContext()
+}
+
+class zeev.fraiman.backgroundlab.ExampleUnitTest {
++ void addition_isCorrect()
+}
+
+class zeev.fraiman.backgroundlab.UploadWorker {
+- {static} String TAG
++ Result doWork()
+}
+
+
+class zeev.fraiman.backgroundlab.SyncWorker {
+- {static} String TAG
++ Result doWork()
+}
+
+
+class zeev.fraiman.backgroundlab.MusicPlayerService {
+- {static} String TAG
++ {static} String CHANNEL_ID
+- boolean isRunning
+- Thread workerThread
++ void onCreate()
++ int onStartCommand(Intent,int,int)
++ void onDestroy()
++ IBinder onBind(Intent)
+- void createNotificationChannel()
+}
+
+
+class zeev.fraiman.backgroundlab.DownloadWorker {
+- {static} String TAG
++ Result doWork()
+}
+
+
+class zeev.fraiman.backgroundlab.UnpackWorker {
+- {static} String TAG
++ Result doWork()
+}
+
+
+class zeev.fraiman.backgroundlab.SaveToDbWorker {
+- {static} String TAG
++ Result doWork()
+}
+
+
+
+
+android.os.AsyncTask <|-- zeev.fraiman.backgroundlab.MyAsyncTask
+androidx.appcompat.app.AppCompatActivity <|-- zeev.fraiman.backgroundlab.MainActivity
+androidx.work.Worker <|-- zeev.fraiman.backgroundlab.PhotoCompressionWorker
+android.app.Service <|-- zeev.fraiman.backgroundlab.TimerService
+zeev.fraiman.backgroundlab.TimerService +.. zeev.fraiman.backgroundlab.TimerService$TimerBinder
+zeev.fraiman.backgroundlab.Binder <|-- zeev.fraiman.backgroundlab.TimerService$TimerBinder
+androidx.work.Worker <|-- zeev.fraiman.backgroundlab.UploadWorker
+androidx.work.Worker <|-- zeev.fraiman.backgroundlab.SyncWorker
+android.app.Service <|-- zeev.fraiman.backgroundlab.MusicPlayerService
+androidx.work.Worker <|-- zeev.fraiman.backgroundlab.DownloadWorker
+androidx.work.Worker <|-- zeev.fraiman.backgroundlab.UnpackWorker
+androidx.work.Worker <|-- zeev.fraiman.backgroundlab.SaveToDbWorker
+@enduml

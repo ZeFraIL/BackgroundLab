@@ -1,0 +1,28 @@
+@startuml
+!theme vibrant
+title WorkManager State Diagram with Constraints
+
+[*] --> ENQUEUED : WorkManager.enqueue()
+
+state ENQUEUED {
+    note right: Task is waiting in the queue.
+}
+
+ENQUEUED --> BLOCKED : Scheduler checks: Constraints NOT met
+state BLOCKED {
+    note right: Waiting for Charging & Wi-Fi.
+}
+
+BLOCKED --> RUNNING : System detects: Constraints are MET
+
+ENQUEUED --> RUNNING : Scheduler checks: Constraints ARE met
+
+state RUNNING {
+    note right: doWork() method is executing.
+}
+
+RUNNING --> SUCCEEDED : doWork() returns Result.success()
+
+SUCCEEDED --> [*]
+
+@enduml
